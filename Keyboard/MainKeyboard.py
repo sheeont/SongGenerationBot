@@ -1,7 +1,7 @@
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-from Keyboard.IKeyboard import IKeyboard
+from Keyboard import IKeyboard
 from config import styles_data
 
 

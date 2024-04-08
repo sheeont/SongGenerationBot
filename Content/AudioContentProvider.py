@@ -1,0 +1,2 @@
+class AudioContentProvider:
+    pass

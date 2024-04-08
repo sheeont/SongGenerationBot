@@ -1,24 +1,26 @@
-from aiogram import Bot, Dispatcher, types
-from aiogram.executor import start_polling
-from aiogram.contrib.middlewares.logging import LoggingMiddleware
+from aiogram import Bot, Dispatcher, F
+from aiogram.filters import Command
+import logging
+
+from Handlers.MessageHandler import MessageHandler
+from Handlers.KeyboardHandler import KeyboardHandler
+
 
 class BotManager:
-    def __init__(self, token: str):
+    def __init__(self, token: str, logging_config: logging.BASIC_FORMAT = logging.INFO):
+        logging.basicConfig(level=logging_config)
+
         self.bot = Bot(token=token)
         self.dp = Dispatcher()
-        self.dp.message.bind_filter(types.ChatTypeFilter(types.ChatType.PRIVATE))
-        self.dp.message.middleware(LoggingMiddleware())
 
-    async def on_start(self, message: types.Message):
-        await message.answer("Привет! Я бот, который поможет тебе создать песню. Пожалуйста, выбери один из вариантов: текст, аудио, текст и аудио.")
-
-    async def on_message(self, message: types.Message):
-        # Здесь будет логика обработки сообщений
-        await message.answer("Спасибо за твой выбор!")
+        self.setup()
 
     def setup(self):
-        self.dp.message.register(self.on_start, commands=["start"])
-        self.dp.message.register(self.on_message)
+        self.dp.message.register(MessageHandler.start_command, Command('start'))
+        self.dp.callback_query.register(KeyboardHandler.handle_styles, F.data.startswith('style_type'))
+        self.dp.callback_query.register(KeyboardHandler.handle_styles, F.data.startswith('style_type'))
+        self.dp.callback_query.register(KeyboardHandler.handle_audio_button, F.data == 'main_audio_button')
+        self.dp.callback_query.register(KeyboardHandler.handle_main_cancel, F.data == 'main_cancel')
 
-    def run(self):
-        start_polling(self.dp, skip_updates=True)
+    async def run(self):
+        await self.dp.start_polling(self.bot)

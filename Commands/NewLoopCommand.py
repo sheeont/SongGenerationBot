@@ -1,7 +1,7 @@
 from aiogram.types import Message
 
-from Commands.ICommand import ICommand
-from Keyboard.MainKeyboard import MainKeyboard
+from Commands import ICommand
+from Keyboard import MainKeyboard
 
 
 class NewLoopCommand(ICommand):

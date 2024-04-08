@@ -1,0 +1,2 @@
+class TextContentProvider:
+    pass

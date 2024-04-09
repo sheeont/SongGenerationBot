@@ -1,7 +1,7 @@
 from aiogram.types import CallbackQuery
 from aiogram.fsm.context import FSMContext
 
-from Commands import NewLoopCommand
+from Commands import NewLoopCommand, ContentDeliveryCommand
 from config import styles_data
 from States import StateList
 
@@ -42,12 +42,15 @@ class KeyboardHandler:
         data = await state.get_data()
 
         style_type = data.get('style_type', None)
-        audio_mode = data.get('audio_mode', None)
+        audio_mode = data.get('audio_mode', False)
 
-        if style_type is None or audio_mode is None:
+        # TODO: Проверить достаточно ли просто проверки на style_type
+        if style_type is None:
             await NewLoopCommand(styles_data[0]['callback_data']).execute(message)
             return
 
         await state.set_state(StateList.generate_content_state)
 
-        pass
+        await ContentDeliveryCommand(audio_mode).execute(message)
+
+        await state.set_state(StateList.wait_text_enter_state)

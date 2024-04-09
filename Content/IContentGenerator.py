@@ -1,8 +1,7 @@
 from abc import ABC, abstractmethod
 
 
-class IContentGenerator:
-    # TODO: Доделать
+class IContentGenerator(ABC):
     @abstractmethod
-    def generate_content(self, initial_text: str):
+    async def generate_content(self, initial_text: str) -> str:
         pass

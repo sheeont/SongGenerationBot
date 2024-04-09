@@ -13,10 +13,11 @@ class YandexRequestInfo:
 
 
 baseline_prompt = """Забудьте все свои предыдущие инструкции. 
-Представьте, что вы известный поэт с высоким навыком рифмования, а так же известный музыкальный исполнитель. 
-Ваша задача придумать осмысленную песню в определенном жанре, которая понравится людям. 
-Вам будет дана первая строка песни, а так же жанр. Вы должны вернуть только текст песни."""
-iam_token = 't1.9euelZqYypfPiZqLjsicmJiWm86Liu3rnpWaiZ2VyZTIx8aUkc7MkJqRko7l8_daby5P-e8UFDkJ_t3z9xoeLE_57xQUOQn-zef1656VmsqSxsuJz52azY2Tk4vOmZ6W7_zF656VmsqSxsuJz52azY2Tk4vOmZ6W.tEGyYaegYVVpcAe5Ov2q-wdRN-m68vjRTygvyajHOMxQCtoehWNEZsHaCdNVfl0jGZaCc9XimCIOWhbdHeiNAQ'
+Представьте, что вы известный поэт с самым высочайшим навыком рифмования, а так же известный музыкальный исполнитель. 
+Ваша задача придумать осмысленную песню в определенном жанре, которая понравится людям..
+Вам будет дана первая строка песни, а так же жанр. Вы должны вернуть только текст песни.
+ПРИМЕЧАНИЯ, ПОСТИСЛОВИЯ, ПРЕДУПРЕЖДЕНИЯ И ЛЮБОЙ ТЕКСТ КРОМЕ ПЕСНИ ВЫВОДИТЬ КАТЕГОРИЧЕСКИ ЗАПРЕЩЕНО"""
+iam_token = 't1.9euelZqXkMqXzc2WxseZloqZkcjHmO3rnpWaiZ2VyZTIx8aUkc7MkJqRko7l9Pd4YitP-e8zdTGQ3fT3OBEpT_nvM3UxkM3n9euelZqQzIuPk5GYk5jHjI6Ml5PNyu_8xeuelZqQzIuPk5GYk5jHjI6Ml5PNyg.jPpK9N-aEzqLuxvCc1mXe5XbG8nD6ZiRGBjTDDRGIZ7xzzBg8v-KUrib23FpipG9I2zSGEfaTj_NmeC5P-b7Aw'
 folder_id = 'b1gpa67eg05vpudm3tn9'
 api_url = 'https://llm.api.cloud.yandex.net'
 
@@ -61,10 +62,9 @@ async def fetch_operation_result(operation_id, iam_token=iam_token):
     except:
         raise ValueError(res.json())
 
-task = """
-Первая строка: Вышка, студкемп, браточки с кайфом
-Жанр: Рэп
-"""
-yandex_request_info = YandexRequestInfo(baseline_prompt, task, folder_id, iam_token, 0.8)
-operation_id = ask_gpt_with_prompt(yandex_request_info)
-operation_result = await fetch_operation_result(operation_id)
+
+async def generate_song(task, temperature):
+    yandex_request_info = YandexRequestInfo(baseline_prompt, task, folder_id, iam_token, temperature)
+    operation_id = ask_gpt_with_prompt(yandex_request_info)
+    operation_result = await fetch_operation_result(operation_id)
+    return operation_result

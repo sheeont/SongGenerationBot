@@ -1,8 +1,8 @@
-from aiogram.types import CallbackQuery
+from aiogram.types import CallbackQuery, Message
 from aiogram.fsm.context import FSMContext
 
 from Commands import NewLoopCommand, ContentDeliveryCommand
-from config import styles_data
+from config import styles_data, default_style_type
 from States import StateList
 
 
@@ -23,7 +23,7 @@ class KeyboardHandler:
     @staticmethod
     async def handle_audio_button(callback: CallbackQuery, state: FSMContext) -> None:
         data = await state.get_data()
-        style_type = data.get('style_type', styles_data[0]['callback_data'])
+        style_type = data.get('style_type', default_style_type)
 
         # Получаем текущее значение режима
         audio_mode: bool = data.get('audio_mode', True)
@@ -38,19 +38,30 @@ class KeyboardHandler:
 
     @staticmethod
     async def handle_generate_button(callback: CallbackQuery, state: FSMContext) -> None:
-        message = callback.message
         data = await state.get_data()
 
-        style_type = data.get('style_type', None)
-        audio_mode = data.get('audio_mode', False)
+        style_type = data.get('style_type')
+        audio_mode = data.get('audio_mode')
+        initial_text = data.get('initial_text')
 
-        # TODO: Проверить достаточно ли просто проверки на style_type
-        if style_type is None:
-            await NewLoopCommand(styles_data[0]['callback_data']).execute(message)
-            return
+        await ContentDeliveryCommand(style_type, audio_mode, initial_text).execute(callback.message)
+        await state.set_state(StateList.waiting_for_initial_text)
 
-        await state.set_state(StateList.generate_content_state)
+        # TODO: Интегрировать класс обработчик для перезапущенной сессии или новой сессии(SessionHandler)
+        await state.update_data({
+            'style_type': default_style_type,
+            'audio_mode': True
+        })
 
-        await ContentDeliveryCommand(audio_mode).execute(message)
+        await state.set_state(StateList.waiting_for_initial_text)
+        await NewLoopCommand(default_style_type).execute(callback.message)
 
-        await state.set_state(StateList.wait_text_enter_state)
+    @staticmethod
+    async def handle_restarted_session(callback: CallbackQuery, state: FSMContext) -> None:
+        await state.update_data({
+            'style_type': default_style_type,
+            'audio_mode': True
+        })
+
+        await state.set_state(StateList.waiting_for_initial_text)
+        await NewLoopCommand(default_style_type).execute(callback.message)

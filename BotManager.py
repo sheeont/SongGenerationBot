@@ -11,14 +11,27 @@ class BotManager:
         logging.basicConfig(level=logging_config)
 
         self.bot = Bot(token=token)
+        # TODO: Проверить можно ли сохранять в оперативку
         self.dp = Dispatcher()
 
         self.setup()
 
     def setup(self):
-        self.dp.message.register(MessageHandler.start_command, Command('start'))
-        self.dp.message.register(MessageHandler.prepare_for_generation_command, StateFilter(None))
+        # Обработка отправляемых сообщений
+        self.dp.message.register(MessageHandler.handle_start_command, Command('start'))
+        self.dp.message.register(
+            MessageHandler.handle_initial_text,
+            StateFilter(StateList.waiting_for_initial_text)
+        )
 
+        # Обработка изменяемых сообщений
+        self.dp.edited_message.register(MessageHandler.handle_edited_initial_text, StateFilter(StateList.waiting_for_confirmation))
+
+        # Обработчики перезапущенной сессии
+        self.dp.message.register(MessageHandler.handle_restarted_session, StateFilter(None))
+        self.dp.callback_query.register(KeyboardHandler.handle_restarted_session, StateFilter(None))
+
+        # Данные обработчики работают только если (State is not None)
         self.dp.callback_query.register(KeyboardHandler.handle_styles, F.data.startswith('style_type'))
         self.dp.callback_query.register(KeyboardHandler.handle_audio_button, F.data == 'main_audio_button')
         self.dp.callback_query.register(KeyboardHandler.handle_generate_button, F.data == 'generate_button')

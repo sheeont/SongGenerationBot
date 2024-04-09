@@ -2,6 +2,7 @@
 # TODO: Сделать форматирование текста и обновить его под правильный формат
 # TODO: Пройтись по конструкторам и добавить типы
 # TODO: Проверить информацию на счет экземпляров
+# TODO: Привести названия файлов, папок, классов, функций, переменных к PEP
 
 styles_data = [
     {
@@ -21,3 +22,7 @@ styles_data = [
         'callback_data': 'chanson'
     }
 ]
+
+default_style_type = styles_data[0]['callback_data']
+
+max_message_length = 450

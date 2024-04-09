@@ -2,6 +2,7 @@ from aiogram.types import Message
 
 from Commands import ICommand
 from Keyboard import ConfirmGenerateKeyboard
+from config import max_message_length
 
 
 class PrepareForGenerationCommand(ICommand):

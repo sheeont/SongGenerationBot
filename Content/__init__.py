@@ -1,3 +1,3 @@
-from IContentGenerator import IContentGenerator
-from AudioContentProvider import AudioContentProvider
-from TextContentProvider import TextContentProvider
+from Content.IContentGenerator import IContentGenerator
+from Content.AudioContentGenerator import AudioContentGenerator
+from Content.TextContentGenerator import TextContentGenerator

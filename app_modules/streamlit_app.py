@@ -2,7 +2,7 @@ import streamlit as st
 from models import yandex_llm as gen
 import asyncio
 import re
-from execute_app import tts_instance
+# from execute_app import tts_instance
 from app_modules.const_for_website import genre, title, range_for_us_picking
 
 
@@ -22,19 +22,19 @@ def cr_music_text(genre, song_first_sentence, temperature):
             return
 
 
-def cr_and_upload_song(song):
-    lines = song.split("\n")
-    song = ''
-    for line in lines:
-        if len(line) >= 15 or line == '\n':
-            song = "\n".join([song, line])
-    song = song.strip()
-    path = tts_instance.generate_audio_by_text(song)
-    audio_file = open(path, 'rb')
-    audio_bytes = audio_file.read()
-    st.audio(audio_bytes)
-
-    st.balloons() # шарики
+# def cr_and_upload_song(song):
+#     lines = song.split("\n")
+#     song = ''
+#     for line in lines:
+#         if len(line) >= 15 or line == '\n':
+#             song = "\n".join([song, line])
+#     song = song.strip()
+#     path = tts_instance.generate_audio_by_text(song)
+#     audio_file = open(path, 'rb')
+#     audio_bytes = audio_file.read()
+#     st.audio(audio_bytes)
+#
+#     st.balloons() # шарики
 
 
 def main_proj():
@@ -96,8 +96,9 @@ def main_proj():
 
             if song:
                 with st.spinner("Аудиофийл генерируется..."):
-                    cr_and_upload_song(song)
-                st.success('Успех! 🥳')
+                    pass
+                    # cr_and_upload_song(song)
+                st.error('Аудио временно не имплементировано 🥳')
 
         else:
             st.write('ЗАПОЛНИТЕ ПРОПУСКИ!')

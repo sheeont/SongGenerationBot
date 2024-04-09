@@ -15,29 +15,50 @@ tts_obj.set_text_to_tts(example_text)
 audio_paths = tts_obj.get_audio()
 """
 
+from io import TextIOWrapper
+from datetime import datetime
+import shutil
 import torch
 
 
 class TTS:
-    language = 'ru'
-    model_id = 'v4_ru'
+    __language = 'ru'
+    __model_id = 'v4_ru'
+    __put_accent = True
+    __put_yo = True
     sample_rate = 48000
     speaker = 'xenia'
-    put_accent = True
-    put_yo = True
+    file_instance: TextIOWrapper
 
     def __init__(self):
         device = torch.device('cpu')
         self.model, self.text = torch.hub.load(repo_or_dir='snakers4/silero-models',
                                                model='silero_tts',
-                                               language=self.language,
-                                               speaker=self.model_id)
+                                               language=self.__language,
+                                               speaker=self.__model_id)
         self.model.to(device)
 
-    def set_text_to_tts(self, text: str):
-        self.text = text
+    @staticmethod
+    def format_audio(path: str) -> str:
+        # Генерация временной метки для имени файла
+        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        destination = 'media/' + timestamp + '.wav'
 
-    def get_audio(self):
-        return self.model.save_wav(text=self.text,
+        # Перемещение и переименование файла
+        shutil.move(path, destination)
+
+        return destination
+
+    def generate_audio(self) -> None:
+        path = self.model.save_wav(text=self.text,
                                    speaker=self.speaker,
                                    sample_rate=self.sample_rate)
+
+        self.file_instance = open(self.format_audio(path), 'r')
+
+    def generate_audio_by_text(self, text: str) -> None:
+        self.text = text
+        self.generate_audio()
+
+    def get_file_instance(self) -> TextIOWrapper:
+        return self.file_instance

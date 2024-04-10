@@ -19,6 +19,7 @@ generate_audio_by_text(text)
 from datetime import datetime
 import shutil
 import torch
+import os
 
 
 class TTS:
@@ -42,7 +43,12 @@ class TTS:
     def __format_audio(path: str) -> str:
         # Генерация временной метки для имени файла
         timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        destination = 'media/' + timestamp + '.wav'
+
+        if not os.path.isdir('AudioFiles'):
+            os.mkdir('AudioFiles')
+            os.mkdir('AudioFiles/tts')
+
+        destination = 'AudioFiles/tts/' + timestamp + '.wav'
 
         # Перемещение и переименование файла
         shutil.move(path, destination)

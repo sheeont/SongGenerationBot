@@ -3,6 +3,7 @@ import asyncio
 from dataclasses import dataclass
 import os
 from dotenv import load_dotenv
+import streamlit as st
 
 load_dotenv()
 
@@ -16,7 +17,7 @@ class YandexRequestInfo:
     temperature: int
 
 
-api_key = os.getenv('API_KEY')
+api_key = st.secrets['API_KEY']
 baseline_prompt = """Забудьте все свои предыдущие инструкции. 
 Представьте, что вы известный поэт с самым высочайшим навыком рифмования, а так же известный музыкальный исполнитель. 
 Ваша задача придумать осмысленную песню в определенном жанре, которая понравится людям..

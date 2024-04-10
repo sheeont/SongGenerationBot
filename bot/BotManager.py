@@ -2,7 +2,8 @@ from aiogram import Bot, Dispatcher, F
 from aiogram.filters import Command, StateFilter
 import logging
 
-from Handlers import MessageHandler, KeyboardHandler
+from Handlers import SessionHandler, KeyboardHandler
+from Handlers.Message import SentMessageHandler, EditedMessageHandler
 from States import StateList
 
 
@@ -16,25 +17,25 @@ class BotManager:
 
         self.setup()
 
-    def setup(self):
+    def setup(self) -> None:
         # Обработка отправляемых сообщений
-        self.dp.message.register(MessageHandler.handle_start_command, Command('start'))
+        self.dp.message.register(SentMessageHandler.handle_start_command, Command('start'))
         self.dp.message.register(
-            MessageHandler.handle_initial_text,
+            SentMessageHandler.handle_initial_text,
             StateFilter(StateList.waiting_for_initial_text)
         )
 
         # Обработка изменяемых сообщений
-        self.dp.edited_message.register(MessageHandler.handle_edited_initial_text, StateFilter(StateList.waiting_for_confirmation))
+        self.dp.edited_message.register(EditedMessageHandler.handle_edited_initial_text, StateFilter(StateList.waiting_for_confirmation))
 
         # Обработчики перезапущенной сессии
-        self.dp.message.register(MessageHandler.handle_restarted_session, StateFilter(None))
-        self.dp.callback_query.register(KeyboardHandler.handle_restarted_session, StateFilter(None))
+        self.dp.message.register(SessionHandler.handle_new_session, StateFilter(None))
+        self.dp.callback_query.register(SessionHandler.handle_new_session, StateFilter(None))
 
         # Данные обработчики работают только если (State is not None)
         self.dp.callback_query.register(KeyboardHandler.handle_styles, F.data.startswith('style_type'))
         self.dp.callback_query.register(KeyboardHandler.handle_audio_button, F.data == 'main_audio_button')
         self.dp.callback_query.register(KeyboardHandler.handle_generate_button, F.data == 'generate_button')
 
-    async def run(self):
+    async def run(self) -> None:
         await self.dp.start_polling(self.bot)

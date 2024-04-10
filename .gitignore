@@ -1,8 +1,11 @@
-venv
 .idea
+venv
+
+bot/FilesForDevelopment
+bot/.env
+bot/test.py
+
 .env
 __pycache__
 */__pycache__/*
-test.py
-FilesForDevelopment
 media/*

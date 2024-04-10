@@ -1,7 +1,7 @@
 from aiogram.types import Message
 
-from Commands import ICommand
-from config import max_message_length
+from bot.Commands import ICommand
+from bot.config import max_message_length
 
 
 class ErrorMessageLengthExceeded(ICommand):

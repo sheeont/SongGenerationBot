@@ -1,0 +1,5 @@
+from bot.Commands.ICommand import ICommand
+from bot.Commands.ContentDeliveryCommand import ContentDeliveryCommand
+from bot.Commands.HelloCommand import HelloCommand
+from bot.Commands.NewLoopCommand import NewLoopCommand
+from bot.Commands.PrepareForGenerationCommand import PrepareForGenerationCommand

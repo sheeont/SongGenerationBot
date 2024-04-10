@@ -2,7 +2,8 @@ import streamlit as st
 from models import yandex_llm as gen
 import asyncio
 import re
-# from execute_app import tts_instance
+from tts.main import TTS
+from tts import suno_songs as suno
 from app_modules.const_for_website import genre, title, range_for_us_picking
 
 
@@ -22,19 +23,28 @@ def cr_music_text(genre, song_first_sentence, temperature):
             return
 
 
-# def cr_and_upload_song(song):
-#     lines = song.split("\n")
-#     song = ''
-#     for line in lines:
-#         if len(line) >= 15 or line == '\n':
-#             song = "\n".join([song, line])
-#     song = song.strip()
-#     path = tts_instance.generate_audio_by_text(song)
-#     audio_file = open(path, 'rb')
-#     audio_bytes = audio_file.read()
-#     st.audio(audio_bytes)
-#
-#     st.balloons() # шарики
+def generate_tts(text: str):
+    """
+    Этой функцией можно сгенерировать text-to-speech
+    Можно добавить checkbox'ы для установки генерации
+    песни через tts и suno
+    """
+    with st.spinner('Генерация tts...'):
+        tts = TTS()
+        path = tts.generate_audio_by_text(text)
+        audio_file = open(path, 'rb')
+        audio_bytes = audio_file.read()
+        st.write('Озвученная песня:')
+        st.audio(audio_bytes)
+
+
+def generate_audio(song, us_genre):
+    try:
+        url = asyncio.run(suno.generate_audio(song, us_genre))
+        st.write('Сгенерированная песня с музыкой:')
+        st.audio(url)
+    except suno.AudioLoadException as e:
+        st.error(e.args[0])
 
 
 def main_proj():
@@ -79,7 +89,7 @@ def main_proj():
         placeholder='Выберите свой вариант'
     )
 
-    song_first_sentence = st.text_input('Введите первое предложение', '-')
+    song_first_sentence = st.text_input('Введите первое предложение')
 
     temperature = st.select_slider(
         'Выберите креативность от 1 до 10',
@@ -89,16 +99,14 @@ def main_proj():
     button_clicked = st.button('Сгенерировать!')
 
     if button_clicked:
-        if len(str(song_first_sentence)) > 5 and us_genre in genre: # Заполнил ли пользователь форму
+        if len(str(song_first_sentence)) > 5 and us_genre in genre:  # Заполнил ли пользователь форму
 
-            song = cr_music_text(genre, song_first_sentence, temperature) # Генерация текста песни
+            song = cr_music_text(genre, song_first_sentence, temperature)  # Генерация текста песни
             st.write(re.sub("\\n", "  \n", f"Сгенерировано из {song_first_sentence}\n\n{song}\n\nсупер-песня!"))
 
             if song:
-                with st.spinner("Аудиофийл генерируется..."):
-                    pass
-                    # cr_and_upload_song(song)
-                st.error('Аудио временно не имплементировано 🥳')
+                with st.spinner("Аудиофайл генерируется..."):
+                    generate_audio(song, us_genre)
 
         else:
             st.write('ЗАПОЛНИТЕ ПРОПУСКИ!')

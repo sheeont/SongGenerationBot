@@ -1,6 +1,7 @@
-venv
 .idea
-.env
+models/.env
+AudioFiles/suno/*.mp3
+AudioFiles/tts/*.wav
 __pycache__
 */__pycache__/*
 test.py

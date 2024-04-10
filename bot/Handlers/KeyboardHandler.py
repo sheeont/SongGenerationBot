@@ -1,9 +1,11 @@
-from aiogram.types import CallbackQuery, Message
+from aiogram.types import CallbackQuery
 from aiogram.fsm.context import FSMContext
 
-from Commands import NewLoopCommand, ContentDeliveryCommand
-from config import styles_data, default_style_type
-from States import StateList
+from bot.Commands import NewLoopCommand, ContentDeliveryCommand
+from bot.config import default_style_type
+from bot.States import StateList
+
+from bot.Handlers.SessionHandler import SessionHandler
 
 
 class KeyboardHandler:
@@ -47,21 +49,4 @@ class KeyboardHandler:
         await ContentDeliveryCommand(style_type, audio_mode, initial_text).execute(callback.message)
         await state.set_state(StateList.waiting_for_initial_text)
 
-        # TODO: Интегрировать класс обработчик для перезапущенной сессии или новой сессии(SessionHandler)
-        await state.update_data({
-            'style_type': default_style_type,
-            'audio_mode': True
-        })
-
-        await state.set_state(StateList.waiting_for_initial_text)
-        await NewLoopCommand(default_style_type).execute(callback.message)
-
-    @staticmethod
-    async def handle_restarted_session(callback: CallbackQuery, state: FSMContext) -> None:
-        await state.update_data({
-            'style_type': default_style_type,
-            'audio_mode': True
-        })
-
-        await state.set_state(StateList.waiting_for_initial_text)
-        await NewLoopCommand(default_style_type).execute(callback.message)
+        await SessionHandler.handle_new_session(callback, state)

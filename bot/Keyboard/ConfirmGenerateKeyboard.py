@@ -1,6 +1,6 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-from Keyboard import IKeyboard
+from bot.Keyboard import IKeyboard
 
 
 class ConfirmGenerateKeyboard(IKeyboard):

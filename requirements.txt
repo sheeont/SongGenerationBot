@@ -1,2 +1,5 @@
-python-dotenv~=1.0.1
 aiogram~=3.4.1
+python-dotenv~=1.0.1
+torch~=2.2.2
+omegaconf~=2.3.0
+requests~=2.31.0

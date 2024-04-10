@@ -1,8 +1,8 @@
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-from Keyboard import IKeyboard
-from config import styles_data
+from bot.Keyboard import IKeyboard
+from bot.config import styles_data
 
 
 class MainKeyboard(IKeyboard):
@@ -11,7 +11,7 @@ class MainKeyboard(IKeyboard):
         False: 'С Аудио'
     }
 
-    def __init__(self, selected_type, audio_mode=True):
+    def __init__(self, selected_type: str, audio_mode: bool = True):
         self.selected_type = selected_type
         self.audio_mode = audio_mode
 

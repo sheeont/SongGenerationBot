@@ -1,0 +1,3 @@
+from bot.Content.IContentGenerator import IContentGenerator
+from bot.Content.TextContentGenerator import TextContentGenerator
+from bot.Content.AudioContentGenerator import AudioContentGenerator

@@ -1,5 +1,8 @@
 .idea
-.env
 venv
-test.py
-FilesForDevelopment
+bot/FilesForDevelopment
+bot/.env
+bot/test.py
+
+models
+tts

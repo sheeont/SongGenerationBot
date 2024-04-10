@@ -1,6 +1,7 @@
 import requests
 import asyncio
 from datetime import datetime
+import os
 
 base_url = 'https://suno.gcui.art/'
 
@@ -23,6 +24,11 @@ def get_audio_information(audio_ids):
 
 def load_song(url):
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+
+    if not os.path.isdir('AudioFiles'):
+        os.mkdir('AudioFiles')
+        os.mkdir('AudioFiles/suno')
+
     with open('AudioFiles/suno/' + timestamp + '.mp3', 'wb') as f:
         f.write(requests.get(url).content)
 

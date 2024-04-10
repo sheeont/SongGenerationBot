@@ -1,9 +1,10 @@
 .idea
 models/.env
-AudioFiles/suno/*.mp3
-AudioFiles/tts/*.wav
+.env
 __pycache__
 */__pycache__/*
 test.py
 FilesForDevelopment
 media/*
+AudioFiles/suno/*.mp3
+AudioFiles/tts/*.wav

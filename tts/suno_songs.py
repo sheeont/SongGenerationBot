@@ -3,7 +3,7 @@ import asyncio
 from datetime import datetime
 import os
 
-base_url = 'https://suno-api-sigma-liart.vercel.app/'
+base_url = 'https://suno-api-umber-tau.vercel.app/'
 
 
 class AudioLoadException(Exception):
@@ -22,18 +22,21 @@ def get_audio_information(audio_ids):
     return response.json()
 
 
-def load_song(url):
+def load_song(url: str, need_path: bool = False):
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
     if not os.path.isdir('AudioFiles'):
         os.mkdir('AudioFiles')
         os.mkdir('AudioFiles/suno')
 
-    with open('AudioFiles/suno/' + timestamp + '.mp3', 'wb') as f:
+    filename = 'AudioFiles/suno/' + timestamp + '.mp3'
+    with open(filename, 'wb') as f:
         f.write(requests.get(url).content)
+        if need_path:
+            return filename
 
 
-async def generate_audio(song, genre):
+async def generate_audio(song, genre, need_path: bool = False):
     data = custom_generate_audio({
         "prompt": song,
         "tags": genre,
@@ -50,7 +53,9 @@ async def generate_audio(song, genre):
                 data = get_audio_information(ids)
 
                 if data[0]["status"] == 'streaming':
-                    load_song(data[0]['audio_url'])
+                    fn = load_song(data[0]['audio_url'], True)
+                    if need_path:
+                        return fn
                     return data[0]['audio_url']
 
                 await asyncio.sleep(35)

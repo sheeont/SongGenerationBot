@@ -23,7 +23,7 @@ baseline_prompt = """Забудьте все свои предыдущие ин�
 Ваша задача придумать осмысленную песню в определенном жанре, которая понравится людям..
 Вам будет дана первая строка песни, а так же жанр. Вы должны вернуть только текст песни.
 ПРИМЕЧАНИЯ, ПОСТИСЛОВИЯ, ПРЕДУПРЕЖДЕНИЯ И ЛЮБОЙ ТЕКСТ КРОМЕ ПЕСНИ ВЫВОДИТЬ КАТЕГОРИЧЕСКИ ЗАПРЕЩЕНО"""
-folder_id = 'b1gpa67eg05vpudm3tn9'
+folder_id = st.secrets['FOLDER_ID']
 api_url = 'https://llm.api.cloud.yandex.net'
 
 
@@ -46,11 +46,13 @@ def ask_gpt_with_prompt(yandex_request_info: YandexRequestInfo):
             }
         ]
     }
-    headers = {"Authorization": f"Api-key {yandex_request_info.api_key}", "x-folder-id": yandex_request_info.folder_id}
+    headers = {"Authorization": f"Api-Key {yandex_request_info.api_key}"}
     url = f"{api_url}/foundationModels/v1/completionAsync"
+    # url = f"{api_url}/foundationModels/v1/completion"
     res = requests.post(url, headers=headers, json=req)
     try:
         return res.json()['id']
+        # return res.json()['result']['alternatives'][0]['message']['text']
     except:
         raise ValueError(res.json())
 
@@ -72,4 +74,9 @@ async def generate_song(task, temperature):
     yandex_request_info = YandexRequestInfo(baseline_prompt, task, folder_id, api_key, temperature)
     operation_id = ask_gpt_with_prompt(yandex_request_info)
     operation_result = await fetch_operation_result(operation_id)
+    # operation_result = ask_gpt_with_prompt(yandex_request_info)
     return operation_result
+
+
+if __name__ == "__main__":
+    print(asyncio.run(generate_song('Я устал', 0.6)))

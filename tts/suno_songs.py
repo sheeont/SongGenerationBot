@@ -3,7 +3,7 @@ import asyncio
 from datetime import datetime
 import os
 
-base_url = 'https://suno-api-umber-tau.vercel.app/'
+base_url = 'https://suno-api-sigma-liart.vercel.app/'
 
 
 class AudioLoadException(Exception):
@@ -46,14 +46,14 @@ async def generate_audio(song, genre):
         if not isinstance(data, dict):
             ids = f"{data[0]['id']},{data[1]['id']}"
 
-            for _ in range(6):
+            for _ in range(4):
                 data = get_audio_information(ids)
 
                 if data[0]["status"] == 'streaming':
                     load_song(data[0]['audio_url'])
                     return data[0]['audio_url']
 
-                await asyncio.sleep(20)
+                await asyncio.sleep(35)
         elif 'error' in data.keys():
             raise AudioLoadException('Не удалось сгенерировать песню 😭')
 

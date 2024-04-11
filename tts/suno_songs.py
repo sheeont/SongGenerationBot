@@ -41,7 +41,7 @@ async def generate_audio(song, genre, need_path: bool = False):
     data = custom_generate_audio({
         "prompt": song,
         "tags": genre,
-        "title": "Test",
+        "title": song.split('\n')[0],
         "make_instrumental": False,
         "wait_audio": False
     })

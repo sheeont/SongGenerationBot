@@ -3,8 +3,11 @@ from models import yandex_llm as gen
 import asyncio
 import re
 from tts.main import TTS
+from dotenv import load_dotenv
 from tts import suno_songs as suno
 from app_modules.const_for_website import genre, title, range_for_us_picking
+
+load_dotenv()
 
 
 def cr_music_text(genre, song_first_sentence, temperature):
@@ -29,13 +32,12 @@ def generate_tts(text: str):
     Можно добавить checkbox'ы для установки генерации
     песни через tts и suno
     """
-    with st.spinner('Генерация tts...'):
-        tts = TTS()
-        path = tts.generate_audio_by_text(text)
-        audio_file = open(path, 'rb')
-        audio_bytes = audio_file.read()
-        st.write('Озвученная песня:')
-        st.audio(audio_bytes)
+    tts = TTS()
+    path = tts.generate_audio_by_text(text)
+    audio_file = open(path, 'rb')
+    audio_bytes = audio_file.read()
+    st.write('Озвученная песня:')
+    st.audio(audio_bytes)
 
 
 def generate_audio(song, us_genre):
@@ -96,6 +98,9 @@ def main_proj():
         options=range_for_us_picking)
     temperature = float(temperature / 10)
 
+    use_suno = st.checkbox('Генерировать песню (с музыкой и пр.)', value=True)
+    use_tts = st.checkbox('Генерировать озвучку (tts)')
+
     button_clicked = st.button('Сгенерировать!')
 
     if button_clicked:
@@ -106,7 +111,11 @@ def main_proj():
 
             if song:
                 with st.spinner("Аудиофайл генерируется..."):
-                    generate_audio(song, us_genre)
+                    if use_suno:
+                        generate_audio(song, us_genre)
+                    if use_tts:
+                        generate_tts(song)
+
 
         else:
             st.write('ЗАПОЛНИТЕ ПРОПУСКИ!')

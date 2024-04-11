@@ -28,6 +28,7 @@ def load_song(url: str, need_path: bool = False):
     if not os.path.isdir('AudioFiles'):
         os.mkdir('AudioFiles')
         os.mkdir('AudioFiles/suno')
+        os.mkdir('AudioFiles/tts')
 
     filename = 'AudioFiles/suno/' + timestamp + '.mp3'
     with open(filename, 'wb') as f:

@@ -47,6 +47,7 @@ class TTS:
         if not os.path.isdir('AudioFiles'):
             os.mkdir('AudioFiles')
             os.mkdir('AudioFiles/tts')
+            os.mkdir('AudioFiles/suno')
 
         destination = 'AudioFiles/tts/' + timestamp + '.wav'
 

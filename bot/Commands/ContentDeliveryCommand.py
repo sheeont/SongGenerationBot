@@ -1,3 +1,4 @@
+import re
 from os import remove
 
 from aiogram.types import Message, FSInputFile
@@ -18,7 +19,7 @@ class ContentDeliveryCommand(ICommand):
                                 'Это займёт немного времени, спасибо за терпение. 🕒')
     finish_generation_message = (
         '<b>Вот что у нас получилось!</b> 📝\n\n{generated_text}\n\n'
-        'Если хочешь что-то изменить — всегда можно начать заново.'
+        '✍️ Если хочешь что-то изменить — всегда можно начать заново.'
     )
 
     def __init__(self, style_type: str, audio_mode: bool, initial_text: str):
@@ -39,6 +40,7 @@ class ContentDeliveryCommand(ICommand):
 
     async def handle_audio_content(self, message: Message, generated_text: str) -> None:
         generated_text = Utils.replace_english_chars(generated_text, 'пупупу')
+        generated_text = re.sub(r'<b>(.*?)</b>', r'\1', generated_text)
 
         if self.audio_mode:
             generated_audio_path = await AudioContentGenerator().generate_content(generated_text)

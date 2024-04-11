@@ -5,7 +5,7 @@ import re
 from tts.main import TTS
 from dotenv import load_dotenv
 from tts import suno_songs as suno
-from app_modules.const_for_website import genre, title, range_for_us_picking
+from app_modules.const_for_website import genre, genre_en, title, range_for_us_picking
 
 load_dotenv()
 
@@ -42,7 +42,7 @@ def generate_tts(text: str):
 
 def generate_audio(song, us_genre):
     try:
-        url = asyncio.run(suno.generate_audio(song, us_genre))
+        url = asyncio.run(suno.generate_audio(song, genre_en[genre.index(us_genre)]))
         st.write('Сгенерированная песня с музыкой:')
         st.audio(url)
     except suno.AudioLoadException as e:

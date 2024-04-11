@@ -3,7 +3,7 @@ import asyncio
 from datetime import datetime
 import os
 
-base_url = 'https://suno.gcui.art/'
+base_url = 'https://suno-api-umber-tau.vercel.app/'
 
 
 class AudioLoadException(Exception):

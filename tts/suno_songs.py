@@ -50,7 +50,7 @@ async def generate_audio(song, genre, need_path: bool = False):
         if not isinstance(data, dict):
             ids = f"{data[0]['id']},{data[1]['id']}"
 
-            for _ in range(4):
+            for i in range(3):
                 data = get_audio_information(ids)
 
                 if data[0]["status"] == 'streaming':
@@ -59,7 +59,11 @@ async def generate_audio(song, genre, need_path: bool = False):
                         return fn
                     return data[0]['audio_url']
 
-                await asyncio.sleep(35)
+                # На первой итерации ждём 75 секунд
+                if i == 0:
+                    await asyncio.sleep(75)
+                else:
+                    await asyncio.sleep(30)
         elif 'error' in data.keys():
             raise AudioLoadException('Не удалось сгенерировать песню 😭')
 

@@ -110,7 +110,7 @@ def main_proj():
             st.write(re.sub("\\n", "  \n", f"Сгенерировано из {song_first_sentence}\n\n{song}\n\nсупер-песня!"))
 
             if song:
-                with st.spinner("Аудиофайл генерируется..."):
+                with st.spinner("Аудиофайл генерируется (в среднем это длится 1,5 минуты)..."):
                     if use_suno:
                         generate_audio(song, us_genre)
                     if use_tts:

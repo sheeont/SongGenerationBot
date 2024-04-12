@@ -6,6 +6,7 @@ from aiogram.types import Message, FSInputFile
 from bot.Commands import ICommand
 from bot.Content import TextContentGenerator, AudioContentGenerator
 from bot.Utils import Utils
+from bot.config import styles_data
 
 
 class ContentDeliveryCommand(ICommand):
@@ -28,8 +29,12 @@ class ContentDeliveryCommand(ICommand):
         self.initial_text = initial_text
 
     async def handle_text_content(self, message: Message) -> str:
-        generated_text = await TextContentGenerator(self.style_type, self.initial_text).generate_content(
-            self.initial_text)
+        style_type_rus = ''
+        for style_type in styles_data:
+            if style_type['callback_data'] == self.style_type:
+                style_type_rus = style_type['text']
+
+        generated_text = await TextContentGenerator().generate_content(self.initial_text, style_type_rus)
 
         if not generated_text:
             await message.edit_text(text=self.errors['TextGenerationFailed'], parse_mode='html')
@@ -43,12 +48,14 @@ class ContentDeliveryCommand(ICommand):
         generated_text = re.sub(r'<b>(.*?)</b>', r'\1', generated_text)
 
         if self.audio_mode:
-            generated_audio_path = await AudioContentGenerator().generate_content(generated_text)
+            generated_audio_path = await AudioContentGenerator().generate_content(generated_text, self.style_type)
+            extension = generated_audio_path.split('.')[-1]
+
             if not generated_audio_path:
-                await message.edit_text(text=self.errors['AudioGenerationFailed'], parse_mode='html')
+                await message.answer(text=self.errors['AudioGenerationFailed'], parse_mode='html')
                 return
 
-            audio_file = FSInputFile(path=generated_audio_path, filename='Music.wav')
+            audio_file = FSInputFile(path=generated_audio_path, filename=f'Music.{extension}')
             await message.bot.send_audio(message.chat.id, audio=audio_file)
 
             # После отправки файл больше не нужен, значит можно удалить

@@ -1,6 +1,11 @@
 # Общая задача на все файлы
 # TODO: Привести названия файлов, папок, классов, функций, переменных к PEP
 
+# TODO: Сделать статус бар генерации аудио
+# TODO: Задачи из моей тетрадки (2)
+
+is_development_now = False
+
 styles_data = [
     {
         'text': 'Рэп',
@@ -20,7 +25,7 @@ styles_data = [
     }
 ]
 
-text_model_temperature = 6
+text_model_temperature = 9
 
 default_style_type = styles_data[0]['callback_data']
 

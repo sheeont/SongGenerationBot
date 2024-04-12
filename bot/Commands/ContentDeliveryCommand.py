@@ -16,8 +16,10 @@ class ContentDeliveryCommand(ICommand):
         'AudioGenerationFailed': 'О нет, кажется, что-то пошло не так с созданием аудио. 🎵 Давай попробуем ещё раз'
     }
 
-    start_generation_message = ('🎨<b>Творческий процесс запущен!</b> Мы работаем над созданием твоего шедевра. '
+    start_generation_text_message = ('🎨<b>Творческий процесс запущен!</b> Мы работаем над созданием твоего шедевра. '
                                 'Это займёт немного времени, спасибо за терпение. 🕒')
+    start_generation_audio_message = '🎶 Аудио уже готовится! Пожалуйста, подождите немного... ⏳'
+
     finish_generation_message = (
         '<b>Вот что у нас получилось!</b> 📝\n\n{generated_text}\n\n'
         '✍️ Если хочешь что-то изменить — всегда можно начать заново.'
@@ -48,6 +50,8 @@ class ContentDeliveryCommand(ICommand):
         generated_text = re.sub(r'<b>(.*?)</b>', r'\1', generated_text)
 
         if self.audio_mode:
+            await message.answer(text=self.start_generation_audio_message)
+
             generated_audio_path = await AudioContentGenerator().generate_content(generated_text, self.style_type)
             extension = generated_audio_path.split('.')[-1]
 
@@ -62,7 +66,7 @@ class ContentDeliveryCommand(ICommand):
             remove(generated_audio_path)
 
     async def execute(self, message: Message) -> None:
-        await message.edit_text(text=self.start_generation_message, parse_mode='html')
+        await message.edit_text(text=self.start_generation_text_message, parse_mode='html')
 
         generated_text = await self.handle_text_content(message)
         if not generated_text:

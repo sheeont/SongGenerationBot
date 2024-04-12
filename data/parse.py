@@ -4,7 +4,7 @@ access_token = 'F--CA-E5kwN2nCHZzGgxZ6pwFufhXsnwd4YiFLdWXsyJJOd6JT6MeXD2_vSuzOX_
 artists = {'Рэп': ['Oxxxymiron', 'MORGENSHTERN', 'ALBLAK 52',  'OG Buda', 'ROCKET', 'OBLADAET', 'THRILL PILL', 'Платина', 'Toxi$',
           'Baby Melo', 'Yanix', 'Big Baby Tape', 'kizaru', 'SODA LUV', 'MAYOT',
            'Пошлая Молли (Poshlaya Molly)', 'Heronwater', 'Markul', 'GONE.Fludd', 'LIL KRYSTALLL',
-           'uglystephan', 'FRIENDLY THUG 52 NGG'],
+           'uglystephan', 'FRIENDLY THUG 52 NGG', ''],
           'Поп-музыка': ['ANNA ASTI', 'Artik & Asti', 'Три дня дождя', 'МОТ', 'INSTASAMKA', 'Zivert', 'JONY', 'Руки Вверх!', 'Мари Краймбрери', 'NILETTO', 'ЕГОР КРИД', 'GAYAZOV$ BROTHER$', 'Люся Чеботина', 'МакSим', 'DEAD BLONDE', 'Сергей Лазарев', 'Дима Билан', 'Полина Гагарина', 'PIZZA', 'LOBODA', 'SEREBRO', 'Градусы'],
           'Рок': ['Кино', 'Земфира', 'Пикник', 'Сплин', 'Звери', 'Би-2', 'Nautilus Pompilius', 'Ночные Снайперы', 'Женя Трофимов', 'Комната культуры', 'Мумий Тролль', 'Агата Кристи', 'ДДТ', 'Браво', 'КняZz', 'Сергей Шнуров', 'TRITIA', 'Ленинград', 'тринадцать карат', 'Папин Олимпос', 'Аквариум', 'МУККА'],
           'Шансон': ['Михаил Круг', 'Ирина Круг', 'Сергей Трофимов', 'Бутырка', 'Сергей Завьялов', 'Алексей Брянцев', 'Иван Кучин', 'Инна Вальтер', 'Сергей Наговицын', 'БумеR', 'Владимир Ждамиров', 'Воровайки', 'Макс Вертиго', 'Рождество', 'Вика Цыганова', 'Артур', 'Мафик', 'Александр Новиков']}
@@ -80,8 +80,9 @@ def preprocess_lyrics(text, max_len=2000, min_line_length = 20):
     text = '\n'.join(text.split('\n')[1:]).strip()
     text = re.sub("\d*Embed", "", text)
     text = re.sub(r"\([^()]*\)", "", text)
+    text = re.sub(r'\bсук[аиоуеы]\b', "", text)
     #text = translit(text, 'ru')
-    #text = re.sub(dirty_words_regex, "", text)
+    text = re.sub(dirty_words_regex, "", text)
     lines = text.split('\n')
     long_lines = []
     for line in lines:

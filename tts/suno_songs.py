@@ -50,7 +50,7 @@ async def generate_audio(song, genre, need_path: bool = False):
         if not isinstance(data, dict):
             ids = f"{data[0]['id']},{data[1]['id']}"
 
-            for i in range(3):
+            for i in range(6):
                 data = get_audio_information(ids)
 
                 if data[0]["status"] == 'streaming':

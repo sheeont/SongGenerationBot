@@ -18,7 +18,7 @@ def custom_generate_audio(payload):
 
 def get_audio_information(audio_ids):
     url = f"{base_url}/api/get?ids={audio_ids}"
-    response = requests.get(url)
+    response = requests.get(url, verify=False)
     return response.json()
 
 
@@ -32,7 +32,7 @@ def load_song(url: str, need_path: bool = False):
 
     filename = 'AudioFiles/suno/' + timestamp + '.mp3'
     with open(filename, 'wb') as f:
-        f.write(requests.get(url).content)
+        f.write(requests.get(url, verify=False).content)
         if need_path:
             return filename
 

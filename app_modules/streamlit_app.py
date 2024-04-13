@@ -1,16 +1,18 @@
 import streamlit as st
 from models import yandex_llm as gen
+from models import rugpt2_llm as ru_gen
+# from models import rnn
 import asyncio
 import re
 from tts.main import TTS
 from dotenv import load_dotenv
 from tts import suno_songs as suno
-from app_modules.const_for_website import genre, genre_en, title, range_for_us_picking
+from app_modules.const_for_website import genre, genre_en, title, range_for_us_picking, models
 
 load_dotenv()
 
 
-def cr_music_text(genre, song_first_sentence, temperature):
+def cr_music_text(genre, song_first_sentence, temperature, model):
     with st.spinner('Текст песни генерируется...'):  # виджет загрузки
 
         task = f"""
@@ -18,7 +20,13 @@ def cr_music_text(genre, song_first_sentence, temperature):
                 Жанр: {genre}
                 """
         try:
-            song = asyncio.run(gen.generate_song(task, temperature))
+            if model == 'Yandex GPT':
+                song = asyncio.run(gen.generate_song(task, temperature))
+            elif model == 'RuGPT2':
+                song = asyncio.run(ru_gen.generate_song(song_first_sentence, genre))
+            # elif model == 'RNN':
+            #     song = asyncio.run(rnn.generate_song(song_first_sentence, genre))
+
             st.success(f'Успех! 😁')
             return song
         except BaseException:
@@ -81,8 +89,15 @@ def main_proj():
         """, unsafe_allow_html=True
     )
 
+    temperature = 1
+
     # title
     st.title(title)
+
+    model = st.selectbox(
+        "Модель",
+        models,
+    )
 
     us_genre = st.selectbox(
         "Стиль",
@@ -93,10 +108,11 @@ def main_proj():
 
     song_first_sentence = st.text_input('Введите первое предложение')
 
-    temperature = st.select_slider(
-        'Выберите креативность от 1 до 10',
-        options=range_for_us_picking)
-    temperature = float(temperature / 10)
+    if model == "Yandex GPT":
+        temperature = st.select_slider(
+            'Выберите креативность от 1 до 10',
+            options=range_for_us_picking)
+        temperature = float(temperature / 10)
 
     use_suno = st.checkbox('Генерировать песню (с музыкой и пр.)', value=True)
     use_tts = st.checkbox('Генерировать озвучку (tts)')
@@ -106,7 +122,7 @@ def main_proj():
     if button_clicked:
         if len(str(song_first_sentence)) > 5 and us_genre in genre:  # Заполнил ли пользователь форму
 
-            song = cr_music_text(genre, song_first_sentence, temperature)  # Генерация текста песни
+            song = cr_music_text(us_genre, song_first_sentence, temperature, model)  # Генерация текста песни
             st.write(re.sub("\\n", "  \n", f"Сгенерировано из {song_first_sentence}\n\n{song}\n\nсупер-песня!"))
 
             if song:

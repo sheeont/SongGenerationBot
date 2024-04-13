@@ -12,7 +12,7 @@ from app_modules.const_for_website import genre, genre_en, title, range_for_us_p
 load_dotenv()
 
 
-def cr_music_text(genre, song_first_sentence, temperature, model):
+def cr_music_text(genre, song_first_sentence, temperature):
     with st.spinner('Текст песни генерируется...'):  # виджет загрузки
 
         task = f"""
@@ -20,8 +20,8 @@ def cr_music_text(genre, song_first_sentence, temperature, model):
                 Жанр: {genre}
                 """
         try:
-            if model == 'Yandex GPT':
-                song = asyncio.run(gen.generate_song(task, temperature))
+            # if model == 'Yandex GPT':
+            song = asyncio.run(gen.generate_song(task, temperature))
             # elif model == 'RuGPT2':
             #     song = asyncio.run(ru_gen.generate_song(song_first_sentence, genre))
             # elif model == 'RNN':
@@ -122,7 +122,7 @@ def main_proj():
     if button_clicked:
         if len(str(song_first_sentence)) > 5 and us_genre in genre:  # Заполнил ли пользователь форму
 
-            song = cr_music_text(us_genre, song_first_sentence, temperature, model)  # Генерация текста песни
+            song = cr_music_text(us_genre, song_first_sentence, temperature)  # Генерация текста песни
             st.write(re.sub("\\n", "  \n", f"Сгенерировано из {song_first_sentence}\n\n{song}\n\nсупер-песня!"))
 
             if song:

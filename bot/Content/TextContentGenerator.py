@@ -9,16 +9,15 @@ from bot.Utils import Utils
 
 
 class TextContentGenerator(IContentGenerator):
-    def __init__(self, style_type, initial_text):
-        self.style_type = style_type
-        self.initial_text = initial_text
-
-    async def generate_content(self, initial_text: str) -> str:
-        task = f"Первая строка: {self.initial_text}\nЖанр: {self.style_type}"
+    async def generate_content(self, initial_text: str, style_type: str) -> str:
+        task = f"Первая строка: {initial_text}\nЖанр: {style_type}"
 
         try:
             timeout_seconds = 60
-            generated_text: str = await asyncio.wait_for(gen.generate_song(task, text_model_temperature/10), timeout_seconds)
+            generated_text: str = await asyncio.wait_for(
+                gen.generate_song(task, text_model_temperature / 10),
+                timeout_seconds
+            )
             generated_text = Utils.replace_bold(generated_text)
             return generated_text
         except asyncio.TimeoutError:

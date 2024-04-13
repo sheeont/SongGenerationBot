@@ -14,7 +14,12 @@ class KeyboardHandler:
         style_type = callback.data.split('_')[2]
 
         data = await state.get_data()
+        previous_style_type = data.get('style_type', '')
         audio_mode = data.get('audio_mode', True)
+
+        if previous_style_type == style_type:
+            await callback.answer()
+            return
 
         await state.update_data({
             'style_type': style_type

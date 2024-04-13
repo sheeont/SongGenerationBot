@@ -1,10 +1,11 @@
 from aiogram import Bot, Dispatcher, F
-from aiogram.filters import Command, StateFilter
+from aiogram.filters import Command, StateFilter, BaseFilter
 import logging
 
 from Handlers import SessionHandler, KeyboardHandler
 from Handlers.Message import SentMessageHandler, EditedMessageHandler
 from States import StateList
+from bot.CustomFilters import IsDevelopmentFilter
 
 
 class BotManager:
@@ -18,6 +19,11 @@ class BotManager:
         self.setup()
 
     def setup(self) -> None:
+        # Обработка режима разработки
+        self.dp.message.register(SessionHandler.handle_development_mode_session, IsDevelopmentFilter())
+        self.dp.edited_message.register(SessionHandler.handle_development_mode_session, IsDevelopmentFilter())
+        self.dp.callback_query.register(SessionHandler.handle_development_mode_session, IsDevelopmentFilter())
+
         # Обработка отправляемых сообщений
         self.dp.message.register(SentMessageHandler.handle_start_command, Command('start'))
         self.dp.message.register(
@@ -26,7 +32,8 @@ class BotManager:
         )
 
         # Обработка изменяемых сообщений
-        self.dp.edited_message.register(EditedMessageHandler.handle_edited_initial_text, StateFilter(StateList.waiting_for_confirmation))
+        self.dp.edited_message.register(EditedMessageHandler.handle_edited_initial_text,
+                                        StateFilter(StateList.waiting_for_confirmation))
 
         # Обработчики перезапущенной сессии
         self.dp.message.register(SessionHandler.handle_new_session, StateFilter(None))

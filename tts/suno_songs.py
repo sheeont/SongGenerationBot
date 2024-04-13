@@ -18,7 +18,7 @@ def custom_generate_audio(payload):
 
 def get_audio_information(audio_ids):
     url = f"{base_url}/api/get?ids={audio_ids}"
-    response = requests.get(url)
+    response = requests.get(url, verify=False)
     return response.json()
 
 
@@ -32,7 +32,7 @@ def load_song(url: str, need_path: bool = False):
 
     filename = 'AudioFiles/suno/' + timestamp + '.mp3'
     with open(filename, 'wb') as f:
-        f.write(requests.get(url).content)
+        f.write(requests.get(url, verify=False).content)
         if need_path:
             return filename
 
@@ -50,7 +50,7 @@ async def generate_audio(song, genre, need_path: bool = False):
         if not isinstance(data, dict):
             ids = f"{data[0]['id']},{data[1]['id']}"
 
-            for i in range(3):
+            for i in range(6):
                 data = get_audio_information(ids)
 
                 if data[0]["status"] == 'streaming':

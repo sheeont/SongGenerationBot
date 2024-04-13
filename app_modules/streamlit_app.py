@@ -1,6 +1,6 @@
 import streamlit as st
 from models import yandex_llm as gen
-from models import rugpt2_llm as ru_gen
+# from models import rugpt2_llm as ru_gen
 # from models import rnn
 import asyncio
 import re
@@ -22,8 +22,8 @@ def cr_music_text(genre, song_first_sentence, temperature, model):
         try:
             if model == 'Yandex GPT':
                 song = asyncio.run(gen.generate_song(task, temperature))
-            elif model == 'RuGPT2':
-                song = asyncio.run(ru_gen.generate_song(song_first_sentence, genre))
+            # elif model == 'RuGPT2':
+            #     song = asyncio.run(ru_gen.generate_song(song_first_sentence, genre))
             # elif model == 'RNN':
             #     song = asyncio.run(rnn.generate_song(song_first_sentence, genre))
 
@@ -94,10 +94,10 @@ def main_proj():
     # title
     st.title(title)
 
-    model = st.selectbox(
-        "Модель",
-        models,
-    )
+    # model = st.selectbox(
+    #     "Модель",
+    #     models,
+    # )
 
     us_genre = st.selectbox(
         "Стиль",
@@ -108,11 +108,11 @@ def main_proj():
 
     song_first_sentence = st.text_input('Введите первое предложение')
 
-    if model == "Yandex GPT":
-        temperature = st.select_slider(
-            'Выберите креативность от 1 до 10',
-            options=range_for_us_picking)
-        temperature = float(temperature / 10)
+    # if model == "Yandex GPT":
+    temperature = st.select_slider(
+        'Выберите креативность от 1 до 10',
+        options=range_for_us_picking)
+    temperature = float(temperature / 10)
 
     use_suno = st.checkbox('Генерировать песню (с музыкой и пр.)', value=True)
     use_tts = st.checkbox('Генерировать озвучку (tts)')

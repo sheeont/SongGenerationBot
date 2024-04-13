@@ -1,7 +1,7 @@
 import streamlit as st
 from models import yandex_llm as gen
 from models import rugpt2_llm as ru_gen
-from models import rnn
+# from models import rnn
 import asyncio
 import re
 from tts.main import TTS
@@ -24,8 +24,8 @@ def cr_music_text(genre, song_first_sentence, temperature, model):
                 song = asyncio.run(gen.generate_song(task, temperature))
             elif model == 'RuGPT2':
                 song = asyncio.run(ru_gen.generate_song(song_first_sentence, genre))
-            elif model == 'RNN':
-                song = asyncio.run(rnn.generate_song(song_first_sentence, genre))
+            # elif model == 'RNN':
+            #     song = asyncio.run(rnn.generate_song(song_first_sentence, genre))
 
             st.success(f'Успех! 😁')
             return song
